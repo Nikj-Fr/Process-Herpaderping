@@ -121,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Gshoo\source\repos\Herpaderping\ext\submodules\wil\include\wil;C:\Users\Gshoo\source\repos\Herpaderping\ext\submodules\phnt</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\submodules\wil\include\wil;$(SolutionDir)\submodules\phnt</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.hpp</PrecompiledHeaderFile>
