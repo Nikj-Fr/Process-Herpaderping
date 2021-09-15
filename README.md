@@ -71,20 +71,15 @@ odbccp32.lib
 As a development infrastructure I used the x64-Debug profile of Visual Studio
 ![project_setup_architecture](./Ressources/project_setup_architecture.png)
 
-#### Configure payload
-In the V0, argument aren't handle yet by the program.  
-You must hardcode the path of the payload and the target:
-![configure_payload_path](./Ressources/configure_payload_path.png)
-
 ### Start the executable
 
 ```bash
 # After a sucessfull compilation..
 $ cd .\Process-Herpaderping\Herpaderping\x64\Debug
-$ Herpaderping.exe
+$ Herpaderping.exe [PayloadFile] [TargetFile]
 ```
 
-## Détection
+## DÃ©tection
 ### Monitoring
 TODO
 
