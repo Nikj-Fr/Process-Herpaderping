@@ -11,7 +11,7 @@ namespace Utilitaire
 {
     constexpr static uint32_t MaxFileBuffer{ 0x8000 }; // 32kib
 
-    HRESULT Utilitaire::FillBufferWithPattern(std::vector<uint8_t>& Buffer, std::span<const uint8_t> Pattern)
+    HRESULT Utilitaire::FillBufferWithPattern(_Inout_ std::vector<uint8_t>& Buffer, _In_ std::span<const uint8_t> Pattern)
     {
         if (Buffer.empty())
         {
@@ -36,7 +36,7 @@ namespace Utilitaire
         return S_OK;
     }
 
-    HRESULT Utilitaire:: GetFileSize(handle_t FileHandle, uint64_t& FileSize)
+    HRESULT Utilitaire::GetFileSize(_In_ handle_t FileHandle, _Out_ uint64_t& FileSize)
     {
         FileSize = 0;
 
@@ -52,7 +52,7 @@ namespace Utilitaire
         return S_OK;
     }
 
-    HRESULT Utilitaire::SetFilePointer(handle_t FileHandle, int64_t DistanceToMove, uint32_t MoveMethod)
+    HRESULT Utilitaire::SetFilePointer(_In_ handle_t FileHandle, _In_ int64_t DistanceToMove, _In_ uint32_t MoveMethod)
     {
         LARGE_INTEGER distance;
         distance.QuadPart = DistanceToMove;
@@ -64,7 +64,7 @@ namespace Utilitaire
         return S_OK;
     }
 
-    HRESULT Utilitaire::CopyFileByHandle(handle_t SourceHandle, handle_t TargetHandle, bool FlushFile)
+    HRESULT Utilitaire::CopyFileByHandle(_In_ handle_t SourceHandle, _In_ handle_t TargetHandle, _In_ bool FlushFile)
     {
         //
         // Get the file sizes.
@@ -125,7 +125,7 @@ namespace Utilitaire
         return S_OK;
     }
 
-    HRESULT Utilitaire::OverwriteFileContentsWithPattern(handle_t FileHandle, std::span<const uint8_t> Pattern, bool FlushFile)
+    HRESULT Utilitaire::OverwriteFileContentsWithPattern(_In_ handle_t FileHandle, _In_ std::span<const uint8_t> Pattern, _In_ bool FlushFile)
     {
         uint64_t targetSize;
         RETURN_IF_FAILED(GetFileSize(FileHandle, targetSize));
@@ -159,6 +159,8 @@ namespace Utilitaire
                 &bytesWritten,
                 nullptr));
 
+            //printf_s("WriteFile pattern Ok: %s\n", buffer.data());
+
             bytesRemaining -= bytesWritten;
         }
 
@@ -170,7 +172,7 @@ namespace Utilitaire
         return S_OK;
     }
 
-    HRESULT Utilitaire::GetImageEntryPointRva(handle_t FileHandle, uint32_t& EntryPointRva)
+    HRESULT Utilitaire::GetImageEntryPointRva(_In_ handle_t FileHandle, _Out_ uint32_t& EntryPointRva)
     {
         EntryPointRva = 0;
 
@@ -269,16 +271,17 @@ namespace Utilitaire
     };
 
     HRESULT Utilitaire::WriteRemoteProcessParameters(
-        handle_t ProcessHandle,
-        const std::wstring ImageFileName,
-        const std::optional<std::wstring>& DllPath,
-        const std::optional<std::wstring>& CurrentDirectory,
-        const std::optional<std::wstring>& CommandLine,
-        void* EnvironmentBlock,
-        const std::optional<std::wstring>& WindowTitle,
-        const std::optional<std::wstring>& DesktopInfo,
-        const std::optional<std::wstring>& ShellInfo,
-        const std::optional<std::wstring>& RuntimeData)
+        _In_ handle_t ProcessHandle,
+        _In_ const std::wstring ImageFileName,
+        _In_opt_ const std::optional<std::wstring>& DllPath,
+        _In_opt_ const std::optional<std::wstring>& CurrentDirectory,
+        _In_opt_ const std::optional<std::wstring>& CommandLine,
+        _In_opt_ void* EnvironmentBlock,
+        _In_opt_ const std::optional<std::wstring>& WindowTitle,
+        _In_opt_ const std::optional<std::wstring>& DesktopInfo,
+        _In_opt_ const std::optional<std::wstring>& ShellInfo,
+        _In_opt_ const std::optional<std::wstring>& RuntimeData
+    )
     {
         //
         // Get the basic info for the remote PEB address.
