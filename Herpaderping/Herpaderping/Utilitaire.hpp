@@ -1,6 +1,8 @@
 // Author:  Nikj
 // File:    Utilitaire.hpp
 
+#ifndef UTILITAIRE_HPP
+#define UTILITAIRE_HPP
 #pragma once
 
 #include "pch.hpp"
@@ -34,3 +36,5 @@ namespace Utilitaire
         _In_opt_ const std::optional<std::wstring>& RuntimeData
     );
 }
+
+#endif UTILITAIRE_HPP // !UTILITAIRE_HPP
